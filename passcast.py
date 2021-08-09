@@ -6,7 +6,7 @@
 # @raycast.mode fullOutput
 
 # Optional parameters:
-# @raycast.icon 🤖
+# @raycast.icon 🔐
 # @raycast.argument1 { "type": "text", "placeholder": "Path (e.g Email/zx2c4.com)" }
 # @raycast.argument2 { "type": "text", "placeholder": "Password", "secure": true }
 # @raycast.packageName Utils
