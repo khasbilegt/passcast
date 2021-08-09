@@ -24,14 +24,15 @@ from pathlib import Path
 PASSWORD_STORE_PATH = Path("~/.password-store").expanduser()
 PASSWORD_PATH = (PASSWORD_STORE_PATH / Path(f"{sys.argv[1]}.gpg")).resolve()
 
+
+def execute_command(args, capture_output=True):
+    return subprocess.run(args, check=True, text=True, capture_output=capture_output)
+
+
 try:
     if PASSWORD_PATH.exists():
-        subprocess.run(
-            ["gpgconf", "--reload", "gpg-agent"],
-            check=True,
-            capture_output=True,
-        )
-        content = subprocess.run(
+        execute_command(["gpgconf", "--reload", "gpg-agent"])
+        content = execute_command(
             [
                 "gpg",
                 "--decrypt",
@@ -40,21 +41,14 @@ try:
                 "--passphrase",
                 f"{sys.argv[2]}",
                 f"{PASSWORD_PATH}",
-            ],
-            text=True,
-            check=True,
-            capture_output=True,
+            ]
         )
-        copied = subprocess.run(
-            ["pass", "-c", f"{sys.argv[1]}"],
-            text=True,
-            check=True,
-            capture_output=True,
-        )
+        copied = execute_command(["pass", "-c", f"{sys.argv[1]}"])
 
         print(f"🔑 {content.stdout}")
         print(f"🤖 {copied.stdout}")
     else:
-        print("🔴 Password not found!")
+        execute_command(["pass"], capture_output=False)
+        print(f"\nPassword not found: {sys.argv[1]}")
 except subprocess.CalledProcessError as e:
     print(f"{e.stderr}")
