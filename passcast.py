@@ -8,7 +8,7 @@
 # Optional parameters:
 # @raycast.icon 🔐
 # @raycast.argument1 { "type": "text", "placeholder": "Path (e.g Email/zx2c4.com)" }
-# @raycast.argument2 { "type": "text", "placeholder": "Password", "secure": true }
+# @raycast.argument2 { "type": "text", "placeholder": "Password", "secure": true, "optional": true }
 # @raycast.packageName Utils
 
 # Documentation:
@@ -29,17 +29,19 @@ def execute_command(args, capture_output=True):
     return subprocess.run(args, check=True, text=True, capture_output=capture_output)
 
 
-try:
-    if PASSWORD_PATH.exists():
-        execute_command(["gpgconf", "--reload", "gpg-agent"])
+if PASSWORD_PATH.exists():
+    try:
+        password_args = [
+            "--pinentry-mode",
+            "loopback",
+            "--passphrase",
+            f"{sys.argv[2]}",
+        ]
         content = execute_command(
             [
                 "gpg",
                 "--decrypt",
-                "--pinentry-mode",
-                "loopback",
-                "--passphrase",
-                f"{sys.argv[2]}",
+                *(password_args if sys.argv[2] else []),
                 f"{PASSWORD_PATH}",
             ]
         )
@@ -47,8 +49,8 @@ try:
 
         print(f"🔑 {content.stdout}")
         print(f"🤖 {copied.stdout}")
-    else:
-        execute_command(["pass"], capture_output=False)
-        print(f"\nPassword not found: {sys.argv[1]}")
-except subprocess.CalledProcessError as e:
-    print(f"{e.stderr}")
+    except subprocess.CalledProcessError as e:
+        print("Couldn't decrypt the file!")
+else:
+    execute_command(["pass"], capture_output=False)
+    print(f"\nNot found: {sys.argv[1]}")
