@@ -2,17 +2,17 @@
 # shellcheck shell=dash
 set -u
 
-command -v "curl" > /dev/null 2>&1 || { echo "curl command did not found" >&2; exit 1; }
-command -v "rm" > /dev/null 2>&1 || { echo "rm command did not found" >&2; exit 1; }
-command -v "mkdir" > /dev/null 2>&1 || { echo "mkdir command did not found" >&2; exit 1; }
-command -v "rmdir" > /dev/null 2>&1 || { echo "rmdir command did not found" >&2; exit 1; }
-command -v "pass" > /dev/null 2>&1 || { echo "pass command did not found" >&2; exit 1; }
+command -v "curl" > /dev/null 2>&1 || { echo "curl command not found" >&2; exit 1; }
+command -v "rm" > /dev/null 2>&1 || { echo "rm command not found" >&2; exit 1; }
+command -v "mkdir" > /dev/null 2>&1 || { echo "mkdir command not found" >&2; exit 1; }
+command -v "rmdir" > /dev/null 2>&1 || { echo "rmdir command not found" >&2; exit 1; }
+command -v "pass" > /dev/null 2>&1 || { echo "pass command not found" >&2; exit 1; }
 
 OUTPUT_PATH="${HOME}/.config/raycast/scripts"
 
 main() {
     if [ ! -d "${HOME}/.password-store" ]; then
-        echo "${HOME}/.password-store directory did not found" >&2;
+        echo "${HOME}/.password-store directory not found" >&2;
         exit 1;
     fi
 
